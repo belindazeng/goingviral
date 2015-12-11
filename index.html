@@ -28,7 +28,6 @@
         <div class="figure">
           <img alt="caption" src=
           "https://studentshare.net/content/wp-content/uploads/2015/05/53a0e7d640b31_-_unknown-3-51047042.png">
-          <!-- <p class="caption">caption</p> -->
         </div>
         <h2 id="background-and-motivation">Background and Motivation</h2>
         <p>In today's day and age of Twitter, popularity is measured in hearts,
@@ -66,7 +65,11 @@
         
 
         <h1 id="exploratory-analysis">Exploratory Analysis</h1>
-        
+        <h4 id="the-distribution-of-retweets-and-favorites-over-time">The distribution
+        of retweets and favorites over time</h4>
+        <div class="figure">
+          <img alt="png" src="index_files/index_63_0.png">
+        </div>
         <h2 id="popularity-score">Popularity Score</h2>
         <p>This is the response variable that we are trying to predict using various
         features of a tweet. The score was originally calculated by adding raw retweet
@@ -88,7 +91,6 @@
         Popularity Score</h4>
         <div class="figure">
           <img alt="png" src="index_files/index_35_1.png">
-          <p class="caption">png</p>
         </div>
         <h4 id="top-10-hashtags">Top 10 hashtags</h4>
         <div class="figure">
@@ -97,53 +99,16 @@
         </div>
         <h4 id="correlation-between-presence-of-links-and-popularity">Correlation
         between presence of links and popularity</h4>
-        <p>Dataframe only has information about links and it would have been too
-        complex to differntiate between images links and other links, so
-        differentiating between images and other urls for this. It appears that having
-        more than one link is correlated with decreased popularity scores.</p>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
-        <pre>
-        <code>(-0.13231394732081603, 3.1358262189471698e-221)</code>
-        </pre>
         <div class="figure">
           <img alt="png" src="index_files/index_38_1.png">
-          <p class="caption">png</p>
         </div>
         <h4 id="correlation-between-user-mentions-and-popularity">Correlation between
         user mentions and popularity</h4>
         <p>It appears as though increasing the number of user mentions is correlated
         with a decrease in popularity score.</p>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
-        <pre>
-        <code>(-0.19074315654104118, 0.0)</code>
-        </pre>
         <div class="figure">
           <img alt="png" src="index_files/index_41_1.png">
-          <p class="caption">png</p>
         </div>
-        <h4 id="correlation-for-number-of-retweets-and-hearts">Correlation for number
-        of retweets and hearts</h4>
-        <p>There generally appears to be a positive correlation between retweet count
-        and hearts.</p>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
-        <pre>
-        <code>(0.93653726046453378, 0.0)</code>
-        </pre>
-        <div class="figure">
-          <img alt="png" src="index_files/index_44_1.png">
-          <p class="caption">png</p>
-        </div>
-        <h3 id="location">Location</h3>
-        <p>Originally we had planned to do exploratory analysis on popular topics that
-        people tweet about by city or state, but after taking a look at our data, we
-        found that 3.2% of tweets were geo-tagged, so we ultimately chose to forego
-        this analysis.</p>
         <h3 id="post-time">Post Time</h3>
         <h4 id="when-are-tweets-posted-throughout-the-week">When are tweets posted
         throughout the week?</h4>
@@ -155,72 +120,22 @@
         </pre>
         <div class="figure">
           <img alt="png" src="index_files/index_49_0.png">
-          <p class="caption">png</p>
         </div>
         <h4 id="when-are-tweets-posted-during-the-day">When are tweets posted during
         the day?</h4>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
-        <div class="figure">
-          <img alt="png" src="index_files/index_51_0.png">
-          <p class="caption">png</p>
-        </div>
-        <p>A histogram is helpful, but a polar histogram could possibly visualize our
-        data in a more intuitive way.</p>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
         <div class="figure">
           <img alt="png" src="index_files/index_53_0.png">
-          <p class="caption">png</p>
         </div>
-        <h4 id="correlation-between-time-of-day-and-tweet-popularity">Correlation
-        between time of day and tweet popularity</h4>
+        
         <p>There does not appear to be a clear relationship between the time of day
         that a tweet is created and its popularity score. There does appear to be some
         cyclical change, but it's hard to tell based on the correlation.</p>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
-        <div class="figure">
-          <img alt="png" src="index_files/index_56_0.png">
-          <p class="caption">png</p>
-        </div>
         <p>Since there does appear to be a slight relationship, we will include this in
         the prediction model.</p>
-        <h4 id="correlation-between-day-of-the-week-posted-and-popularity">Correlation
-        between day of the week posted and popularity</h4>
-        <p>This appears uniform, more so than hour of the day.</p>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
-        <div class="figure">
-          <img alt="png" src="index_files/index_60_0.png">
-          <p class="caption">png</p>
-        </div>
-        <h4 id="the-distribution-of-retweets-and-favorites-over-time">The distribution
-        of retweets and favorites over time</h4>
-        <p>We were unable to plot this graph using the standardized retweet count so we
-        chose to display the relationship using unstandardized values.</p>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
-        <div class="figure">
-          <img alt="png" src="index_files/index_63_0.png">
-          <p class="caption">png</p>
-        </div>
         <h4 id="users-followers-correlated-with-popularity">User's followers correlated
         with popularity</h4>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
-        <pre>
-        <code>(0.23966396888226396, 0.0)</code>
-        </pre>
         <div class="figure">
           <img alt="png" src="index_files/index_65_1.png">
-          <p class="caption">png</p>
         </div>
         <h1 id="sentiment-analysis">Sentiment Analysis</h1>
         <p>Using sentiment lookup dictionaries, we scored tweets based on how
