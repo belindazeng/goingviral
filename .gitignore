@@ -1,5 +1,6 @@
 tempdata
 api-keys.py
-scraps.py
-goingviral.ipynb
 .ipynb_checkpoints
+.DS_Store
+scraps.py
+goingviral_files

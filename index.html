@@ -31,6 +31,500 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <div class="clients" markdown="1"> **Markdown text** https://www.npmjs.com/package/markdown-to-html</div>
+          <h1 id="predicting-popularity-using-text-and-content-analysis-to-examine-shared-characteristics-of-popular-posts-on-twitter">Predicting Popularity: Using Text and Content Analysis to Examine Shared Characteristics of Popular Posts on Twitter</h1>
+          <h3 id="a-cs109-final-project-by-belinda-zeng-roseanne-feng-yuqi-hou-and-zahra-mahmood">A CS109 Final Project by Belinda Zeng, Roseanne Feng, Yuqi Hou, and Zahra Mahmood</h3>
+          <div class="figure">
+            <img alt="caption" src=
+            "https://studentshare.net/content/wp-content/uploads/2015/05/53a0e7d640b31_-_unknown-3-51047042.png">
+            <p class="caption">caption</p>
+          </div>
+          <h2 id="background-and-motivation">Background and Motivation</h2>
+          <p>Twitter (https://twitter.com) is a social network, real-time news media
+          service, and micro-blogging service where users can use text, photos, and
+          videos to express moments or ideas in 140-characters or less. These
+          140-character messages are called &quot;tweets.” According to Twitter’s
+          website, millions of tweets are shared in real time, every day. Registered
+          users can read and post tweets, favorite other people’s tweets, retweet other
+          people’s posts, favorite tweets, and follow other accounts. Unregistered users
+          can read tweets from public accounts.</p>
+          <p>In today's day and age of Twitter, popularity is measured in hearts,
+          retweets, follows, and follow-backs. What posts get popular over time? What
+          seems to resonate most with people? Do positive or negative sentiments invite
+          more engagement? In this project, we use Twitter's publically available archive
+          of content to like to examine some of the shared characteristics of popular
+          posts, including length of post, visual content, positivity, negativity.</p>
+          <p>Our idea came from a desire to understand how movements such as
+          #BlackLivesMatter and #Ferguson begin on Twitter as well as a general desire to
+          know what makes a post popular. We chose to focus on Tweets on an individual
+          level and to use natural language processing to be able to understand and
+          predict what makes posts popular.</p>
+          <p>One paper that is related to our work is a paper from Cornell titled,
+          <a href="https://chenhaot.com/pages/wording-for-propagation.html">The effect of
+          wording on message propagation: Topic- and author-controlled natural
+          experiments on Twitter</a>, which compaired pairs of tweets containing the same
+          url and written by the same user but employing different wording to see which
+          version attracted more retweets. Twitter itself has published research on
+          <a href="https://blog.twitter.com/2014/what-fuels-a-tweets-engagement">What
+          fuels a Tweet’s engagement?</a> Their research found that adding video, links
+          and photos all result in an increase in the number of retweets and even
+          breaking down those results by industry. Inspired by previous research, we
+          sought to include sentiment analysis in our understanding of what made a Tweet
+          popular.</p>
+          <h2 id="objectives">Objectives</h2>
+          <ol style="list-style-type: decimal">
+            <li>How does the distribution of retweets and hearts vary for a post
+            depending on the time of day when the tweet is created?</li>
+            <li>How does positive and negative sentiment affect popularity?</li>
+            <li>What Tweets do we think will become popular?</li>
+          </ol>
+          <h2 id="approach">Approach</h2>
+          <p>This data is publicly available via the Twitter Static API that gets queries
+          based on specific parameters. We limited the data set to look at tweets within
+          a specified period of time. We are storing the data in CSV files for now. To
+          reduce file-sizes, we will try to have multiple CSVs so that we don't load too
+          much data into memory. If data exceeds computer memory, we will consider
+          AWS/SQL database alternatives.</p>
+          <p>As we can see, the retweet count and favorite count are always 0. This is
+          because we're using the live streaming API and, as a result, we're scraping the
+          tweets as they are tweeted. At this point, all the tweets have retweet count 0
+          and favorite count 0 since they were literally just posted! That is, unless the
+          tweet posted is actually a retweet...</p>
+          <p>To solve the problem of brand new tweets, we used retweets to get the
+          original tweet. This also ensures that our model isn't thrown off when someone
+          with a huge follower count retweets something. Finally, we made sure not to
+          consider the same tweet text twice.</p>
+          <p>The following function updates the way we use the tweepy streaming API. We
+          first detect if the tweet we're looking at is actually a retweet of something.
+          If so, we then get the original tweet and save that to our csv.</p>
+          <p>We made sure to only look at English language tweets and unique tweets.</p>
+          <h1 id="exploratory-analysis">Exploratory Analysis</h1>
+          <p>After scraping tweets from the Twitter Streaming API, we use that data to
+          build a feature list that we use to predict how popular an individual tweet
+          will be, measured by a composite score based on the amount of retweets and
+          hearts. We will also use metadata to help us analyze trends in the data, for
+          example if there is a correlation between time of day and retweets.</p>
+          <h1 id="popularity-score">Popularity Score</h1>
+          <p>This is the response variable that we are trying to predict using various
+          features of a tweet. The score was originally calculated by adding raw retweet
+          count and favorite counts together, but after some exploratory analysis we
+          chose to z-score retweet and favorite counts.</p>
+          <p>The distribution of popularity is extremely right-tailed. Later we find that
+          this is explained by the distribution of retweet counts and favorite counts are
+          also extremely right-skewed.</p>
+          <h2 id="before-transformation">Before Transformation</h2>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_18_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h2 id="after-transformation">After Transformation</h2>
+          <p>The huge standard deviation and extreme ranges of popularity score suggest
+          that we may need to rethink how we score popularity. We looked more closely at
+          what made up our composite popularity score (favorite count + retweet count)
+          and looked at a statistical summary of retweet count and favorite count to
+          decide if any standardization would be necessary.</p>
+          <p>We find that the histogram of raw retweet and favorite count appear to have
+          an exponential distribution, so we transformed the data using a log
+          transformation. Since the data was skewed with a disproportionate amount of
+          zeros, a log(1+x) transformation made the most sense to use since, when x=0,
+          log(1)=0. This allowed us to use a log transformation even with the presence of
+          many zeros. The resulting distribution appeared more more normal.</p>
+          <p>Given statistics on the transformation on retweet_count and favorite_count,
+          we realize we want to standardize these two for use later on, otherwise since
+          there are way more retweets than favorites, retweets would get weighted more
+          heavily.</p>
+          <h3 id="create-standardized-retweet_count-and-favorite_count">Create
+          standardized retweet_count and favorite_count</h3>
+          <p>We decided to use a z-score to standardize retweet counts and favorite
+          counts before adding them together to create the composite popularity score.
+          Using that method, we standardize retweet count and favorites by subtracting
+          the mean and dividing by the standard deviation.</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_24_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h2 id="hashtag-analysis">Hashtag Analysis</h2>
+          <h4 id="what-fraction-of-tweets-in-the-sample-use-hashtags">What fraction of
+          tweets in the sample use hashtags?</h4>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_27_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h4 id="top-10-hashtags">Top 10 hashtags</h4>
+          <p>We make a bar plot of the 10 most commonly used hashtags:</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_30_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h3 id="tweeting-about-popular-topics-and-popularity-score">Tweeting about
+          &quot;Popular&quot; Topics and Popularity Score</h3>
+          <p>Even if you're tweeting about a topic (defined in this case as a hashtag
+          that occurs frequently in our sample), it doesn't affect popularity all that
+          much. Therefore, we chose to leave hashtags out of our model because it didn't
+          seem as though hashtags affected our model that much.</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <pre>
+          <code>&lt;matplotlib.collections.PathCollection at 0x152393d50&gt;</code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_33_1.png">
+            <p class="caption">png</p>
+          </div>
+          <h4 id="number-of-hashtags-vs.-popularity-score">Number of Hashtags vs.
+          Popularity Score</h4>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <pre>
+          <code>(-0.11968453723056098, 4.1997190814324752e-181)</code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_35_1.png">
+            <p class="caption">png</p>
+          </div>
+          <h4 id="correlation-between-presence-of-links-and-popularity">Correlation
+          between presence of links and popularity</h4>
+          <p>Dataframe only has information about links and it would have been too
+          complex to differntiate between images links and other links, so
+          differentiating between images and other urls for this. It appears that having
+          more than one link is correlated with decreased popularity scores.</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <pre>
+          <code>(-0.13231394732081603, 3.1358262189471698e-221)</code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_38_1.png">
+            <p class="caption">png</p>
+          </div>
+          <h4 id="correlation-between-user-mentions-and-popularity">Correlation between
+          user mentions and popularity</h4>
+          <p>It appears as though increasing the number of user mentions is correlated
+          with a decrease in popularity score.</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <pre>
+          <code>(-0.19074315654104118, 0.0)</code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_41_1.png">
+            <p class="caption">png</p>
+          </div>
+          <h4 id="correlation-for-number-of-retweets-and-hearts">Correlation for number
+          of retweets and hearts</h4>
+          <p>There generally appears to be a positive correlation between retweet count
+          and hearts.</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <pre>
+          <code>(0.93653726046453378, 0.0)</code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_44_1.png">
+            <p class="caption">png</p>
+          </div>
+          <h3 id="location">Location</h3>
+          <p>Originally we had planned to do exploratory analysis on popular topics that
+          people tweet about by city or state, but after taking a look at our data, we
+          found that 3.2% of tweets were geo-tagged, so we ultimately chose to forego
+          this analysis.</p>
+          <h3 id="post-time">Post Time</h3>
+          <h4 id="when-are-tweets-posted-throughout-the-week">When are tweets posted
+          throughout the week?</h4>
+          <p>Because we used the Twitter Streaming API, most of the tweets are posted on
+          a Tuesday, since that's when we scraped the tweets. This is also the case for
+          the spike in tweets posted between midnight and 4am (localized time).</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_49_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h4 id="when-are-tweets-posted-during-the-day">When are tweets posted during
+          the day?</h4>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_51_0.png">
+            <p class="caption">png</p>
+          </div>
+          <p>A histogram is helpful, but a polar histogram could possibly visualize our
+          data in a more intuitive way.</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_53_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h4 id="correlation-between-time-of-day-and-tweet-popularity">Correlation
+          between time of day and tweet popularity</h4>
+          <p>There does not appear to be a clear relationship between the time of day
+          that a tweet is created and its popularity score. There does appear to be some
+          cyclical change, but it's hard to tell based on the correlation.</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_56_0.png">
+            <p class="caption">png</p>
+          </div>
+          <p>Since there does appear to be a slight relationship, we will include this in
+          the prediction model.</p>
+          <h4 id="correlation-between-day-of-the-week-posted-and-popularity">Correlation
+          between day of the week posted and popularity</h4>
+          <p>This appears uniform, more so than hour of the day.</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_60_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h4 id="the-distribution-of-retweets-and-favorites-over-time">The distribution
+          of retweets and favorites over time</h4>
+          <p>We were unable to plot this graph using the standardized retweet count so we
+          chose to display the relationship using unstandardized values.</p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_63_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h4 id="users-followers-correlated-with-popularity">User's followers correlated
+          with popularity</h4>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <pre>
+          <code>(0.23966396888226396, 0.0)</code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_65_1.png">
+            <p class="caption">png</p>
+          </div>
+          <h1 id="sentiment-analysis">Sentiment Analysis</h1>
+          <h4 id="determining-positivenegative-words">Determining positive/negative
+          words</h4>
+          <p>Using sentiment lookup dictionaries, score tweets based on how
+          positive/negative they are.</p>
+          <p>Used a basic list of positive/negative words to begin with, no weights or
+          other information beyond positive/negative. Appears to miss a bunch of tokens
+          (1812/892606 found).</p>
+          <p>Tried LabMT, using code provided. Rate is a lot better (7016/892606).</p>
+          <p>Realized number of tokens (892606) was total tokens instead of unique tokens
+          (83093). Still a lot but more tokens found than expected. LabMT is probably the
+          better choice, though.</p>
+          <h3 id="initial-analysis">Initial Analysis</h3>
+          <p>First we tested the completeness of the lookup dictionaries that we
+          originally chose to score text sentiment. The first positive.txt and
+          negative.txt dictionaries are from UNC. Due to the nature of Twitter, many
+          words and phrases tweeted will not be standard English and it is unlikely that
+          we will find ratings for all of them in our dictionaries. We chose to go with
+          LabMT as our dictionary since it was built for Twitter and therefore contained
+          more words that we looked up.</p>
+          <p>We used NLTK to handle much of the text parsing. We also used the NLTK
+          tokenizer which breaks up punctuation and contractions, so words like
+          &quot;can't&quot; are broken up into &quot;ca&quot; &quot;n't&quot;, as well as
+          emoticons such as &quot;:)&quot; which become &quot;:&quot;, &quot;)&quot;.
+          This causes some data to be lost, but ultimately these are neutral or stop
+          words that do not have a significant impact on sentiment.</p>
+          <p>First, we compiled all the tweets into a format that NLTK could work
+          with...</p>
+          <p>Then, we looked at how often individual tokens appear and checked to see how
+          many appeared in each of the dictionaries (we are using two dictionaries, the
+          UNC and LabMT one).</p>
+          <p>We can see that LabMT found more words so we chose to go with LabMT in our
+          final analysis. Plus, LabMT computes sentiment on a scale whereas the UNC
+          dictionaries were binary. LabMT gave out more information which we thought
+          would be more useful for our model. We also took into consideration that some
+          tokens would not have sentiment ratings, such as the URL tokens or hapaxes,
+          which are tokens that appear only once in our tweets sample.</p>
+          <h4 id="expectations">Expectations</h4>
+          <p>A lot of words don't appear in our dictionary, but we think that's okay
+          because many of these are the result of formatting in Tweets that causes the
+          tokenizer difficulty in parsing, or are unique words that are unlikely to throw
+          off our scoring, such as URLs.</p>
+          <h2 id="sentiment-scoring">Sentiment Scoring</h2>
+          <p>Scoring - build columns for scoring text, one on the raw text, one on text
+          that ignores words not in our dictionary, and one that shows us which words are
+          not in the dictionary.</p>
+          <p>Checking how our lookup and scoring is working.</p>
+          <p>Sentiment score ranges from approx. -3 to 3, with a mean close to 0.1, or
+          roughly neutral.</p>
+          <p>Hapaxes (words that appear only once in the Tweets we're analyzing) are a
+          surprisingly large percentage of our tokens (~55000 out of 83000). A lot of
+          them are URLs (19812), which we can probably ignore, or include a Unicode
+          character or formatting that caused the tokenizer to behave oddly. Would it be
+          worth it to try to filter out punctuation, or manually add them to our lookup
+          (ex. replace .!?s with spaces, or add tokens such as '...'. If we add them, how
+          do we generate a score for them?)</p>
+          <h2 id="most-common-tokens">50 Most Common Tokens</h2>
+          <p>We can look at the fifty most common tokens in our tweets to get an idea of
+          what appears most often. Many of these are punctuation, which generally do not
+          have a consistent effect on sentiment, or are neutral words that do not factor
+          into our sentiment.</p>
+          <h1 id="the-ngram-problem">The Ngram Problem</h1>
+          <p>Our approach to sentiment analysis is very simplistic, in large part because
+          we look at words individually. However, in sentences words are not independent
+          of each other and their meanings can combine in different ways to affect the
+          sentiment. For example, the phrase &quot;not bad&quot; would be considered
+          positive, but our sentiment would score it as negative because &quot;not&quot;
+          and &quot;bad&quot; are generally negative. To examine the extent of which this
+          would affect our sentiment scoring, we looked at bigrams and trigrams to
+          understand how often and which bigrams/trigrams could be scored differently
+          than the unigrams. We found that it wasn't a significant enough difference to
+          include them in our analysis.</p>
+          <h3 id="bigrams">Bigrams</h3>
+          <p>We begin by finding the bigrams where the constituent elements are strongly
+          associated with each other, i.e. they often occur together.</p>
+          <h3 id="most-strongly-associated-bigrams">20 Most Strongly Associated
+          Bigrams</h3>
+          <p>Strongly associated bigrams occur when the elements appear together
+          consistently. For example, if we see a &quot;https&quot; token, the chance that
+          the next token is &quot;:&quot; is high, giving the bigram (&quot;https&quot;,
+          &quot;:&quot;) a high association score.</p>
+          <h3 id="token-wrangling">Token Wrangling</h3>
+          <p>At this point, we remove stopwords and punctuation from our list of tokens
+          in order to see more meaningful tokens in our analysis.</p>
+          <h2 id="distribution-of-bigram-frequencies">Distribution of bigram
+          frequencies</h2>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_91_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h2 id="bigrams-vs-unigrams">Bigrams vs Unigrams</h2>
+          <p>** Count important bigrams **</p>
+          <p>These are considered to be bigrams that show up 50 or more times.</p>
+          <p>** What percentage of our bigrams are important? **</p>
+          <p>This gives us hope that the presence of bigrams won't throw off our
+          calculations too badly.</p>
+          <p>** Does manual scoring differ from our unigram scores? **</p>
+          <p>We manually score the bigrams to see which are positive and negative. Then
+          we do some unigram scoring. Our unigram scores including neutrals. Our unigram
+          scores without neutrals. Our bigramdf now includes manual_ratings,
+          unigram_ratings with neutrals and unigram_ratings without neutrals. Calculate
+          the accuracy of our unigram scoring. This shows that our unigram scoring seems
+          pretty accurate since 90% of our manual scoring of bigrams actually match our
+          unigram scores. Now we see if this holds for our no neutrals scoring as
+          wel.</p>
+          <h3 id="trigrams">Trigrams</h3>
+          <p>Now we do the same thing with trigrams.</p>
+          <p><strong>Plot distribution of trigram frequencies</strong></p>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_102_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h2 id="trigrams-vs-unigrams">Trigrams vs Unigrams</h2>
+          <p>** Count important trigrams **</p>
+          <p>As before, the percentage of our trigrams that are important.</p>
+          <p><strong>Compare manual and unigram scores of trigrams.</strong></p>
+          <p>We followed the same procedure as we did with bigrams. Again, we realize
+          that our unigram scoring seems pretty accurate.</p>
+          <h3 id="unigram-bigram-trigram-comparison">Unigram, Bigram, Trigram
+          comparison</h3>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <pre>
+          <code>&lt;matplotlib.legend.Legend at 0x143237d10&gt;</code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_109_1.png">
+            <p class="caption">png</p>
+          </div>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <pre>
+          <code>&lt;matplotlib.text.Text at 0x1591c9f90&gt;</code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_110_1.png">
+            <p class="caption">png</p>
+          </div>
+          <h1 id="prediction">Prediction</h1>
+          <p>Working on prediction. Note: HW5 prediction is used to predict if sentiment
+          is positive or negative, but we want to use this to predict how popular
+          something is, not sure how to do that. Xarray below was built on text, but we
+          should probably be doing something like HW2 and using sentiment or
+          sentimentnoneutrals as one of the factors instead. I have been doing too much
+          text analysis.</p>
+          <p>We model popularity as a function of features of the tweet and the user that
+          posted it. Hashtags, links, mentioned users, sentiment, and time of posting are
+          all features that can affect how many people see the tweet and the likelihood
+          of a user retweeting and thus expanding the number of users who see the tweet.
+          We also use the poster's follower count as a feature to account for users whose
+          higher follower counts means that their initial audience is larger to begin
+          with and can skew their popularity score compared to users with lower follower
+          counts.</p>
+          <p>Preliminary test on a basic OLS regression model we have fairly low R^2.
+          It's possible to run the following code to see if there's just something wrong
+          in our formula (i.e. can we get a higher R^2 with a different combination of
+          features), but it's likely that all our results are going to have a low R^2 by
+          the nature of the problem.</p>
+          <h2 id="prediction-results">Prediction Results</h2>
+          <pre class="sourceCode python">
+          <code class="sourceCode python"></code>
+          </pre>
+          <div class="figure">
+            <img alt="png" src="index_files/index_116_0.png">
+            <p class="caption">png</p>
+          </div>
+          <h2 id="limitations">Limitations</h2>
+          <p>We have several limitations to this study.</p>
+          <ul>
+            <li>Data sample bias. Even though we scraped the tweets randomly, our sample
+            is biased towards a specific time period, namely Tuesdays. This is because
+            our tweets were originally scraped through the streaming API on a Tuesday.
+            Though we filter the tweets looking for retweets and then only inputting the
+            original tweet from that retweet into our data set, this causes a bias for
+            our tweets to come primarily from Tuesdays, or even Monday and
+            Wednesdays.</li>
+            <li>outliers for max size</li>
+          </ul>
+          <h2 id="future-work">Future Work</h2>
+          <ul>
+            <li>
+              <p>Character Length and Emojiis, we didn't take out emojiis</p>
+            </li>
+            <li>
+              <p>We can also use 0 - inflated poisson</p>
+            </li>
+            <li>
+              <p>Naive Bayes Classifier</p>
+            </li>
+            <li>
+              <p>Time zone - seeing if local time vs universal time has an effect</p>
+            </li>
+          </ul>
+
+
       </section>
     </div>
 
