@@ -26,8 +26,7 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <div class="figure">
-          <img alt="caption" src=
-          "https://studentshare.net/content/wp-content/uploads/2015/05/53a0e7d640b31_-_unknown-3-51047042.png">
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/9tEz-7wnjwA" frameborder="0" allowfullscreen></iframe>
         </div>
         <h2 id="background-and-motivation">Background and Motivation</h2>
         <p>In today's day and age of Twitter, popularity is measured in hearts,
@@ -95,7 +94,6 @@
         <h4 id="top-10-hashtags">Top 10 hashtags</h4>
         <div class="figure">
           <img alt="png" src="index_files/index_30_0.png">
-          <p class="caption">Bar plot of the 10 most commonly used hashtags</p>
         </div>
         <h4 id="correlation-between-presence-of-links-and-popularity">Correlation
         between presence of links and popularity</h4>
@@ -110,17 +108,6 @@
           <img alt="png" src="index_files/index_41_1.png">
         </div>
         <h3 id="post-time">Post Time</h3>
-        <h4 id="when-are-tweets-posted-throughout-the-week">When are tweets posted
-        throughout the week?</h4>
-        <p>Because we used the Twitter Streaming API, most of the tweets are posted on
-        a Tuesday, since that's when we scraped the tweets. This is also the case for
-        the spike in tweets posted between midnight and 4am (localized time).</p>
-        <pre class="sourceCode python">
-        <code class="sourceCode python"></code>
-        </pre>
-        <div class="figure">
-          <img alt="png" src="index_files/index_49_0.png">
-        </div>
         <h4 id="when-are-tweets-posted-during-the-day">When are tweets posted during
         the day?</h4>
         <div class="figure">
@@ -128,9 +115,7 @@
         </div>
         
         <p>There does not appear to be a clear relationship between the time of day
-        that a tweet is created and its popularity score. There does appear to be some
-        cyclical change, but it's hard to tell based on the correlation.</p>
-        <p>Since there does appear to be a slight relationship, we will include this in
+        that a tweet is created and its popularity score, but we found there there did appear to be some cyclical change, so we chose to include this in
         the prediction model.</p>
         <h4 id="users-followers-correlated-with-popularity">User's followers correlated
         with popularity</h4>
@@ -161,7 +146,6 @@
         </div>
         <div class="figure">
           <img alt="png" src="index_files/index_110_1.png">
-          <p class="caption">The NGram Problem</p>
         </div>
         <h1 id="prediction">Prediction</h1>
         <p>We modeled popularity as a function of features of the tweet and the user that
